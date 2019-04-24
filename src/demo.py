@@ -2,6 +2,7 @@ import random, numpy, math
 import src.tsp.annealing as tsp
 from src.plot.utils import PlotData, PlotUtils
 from src.tsp.cooling import CoolingType
+from src.tsp.exhaustive import Exhaustive
 
 N = 10
 
@@ -17,13 +18,26 @@ for idx, pair in enumerate(pairs):
 numpy.fill_diagonal(matrix, matrix.max() + 1)
 
 test = tsp.Annealing(CoolingType.CONSTANT, matrix=matrix)
+test2 = Exhaustive(matrix)
+test3 = tsp.Annealing(CoolingType.MAX_LINEAR, matrix=matrix)
 
-for i in range(10):
+tour2, val = test2.find_best_route()
+
+for i in range(2):
     test.anneal()
-
+    test3.anneal()
 tour = test.route
+# tour2 = test2.route
+tour3 = test3.route
 
 datas = [PlotData([cities[tour[i % N]][1][0] for i in range(N + 1)],
                   [cities[tour[i % N]][1][1] for i in range(N + 1)],
-                  color="blue", label="ff")]
+                  color="blue", label="1111"),
+         PlotData([cities[tour2[i % N]][1][0] for i in range(N + 1)],
+                [cities[tour2[i % N]][1][1] for i in range(N + 1)],
+                                                     color="green", label="222"),
+         PlotData([cities[tour3[i % N]][1][0] for i in range(N + 1)],
+                [cities[tour3[i % N]][1][1] for i in range(N + 1)],
+                color="red", label="333")]
+
 PlotUtils.build_plot(datas)
